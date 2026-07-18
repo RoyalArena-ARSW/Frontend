@@ -1,5 +1,7 @@
 import { apiClient } from './client';
 
 export const deckApi = {
-  getActiveDeck: () => apiClient.get('/api/decks/my/active'),
+  getMyActiveDeck: () => apiClient.get('/api/decks/my/active'),
+
+  getAllCards: () => apiClient.get('/api/cards'),
 };

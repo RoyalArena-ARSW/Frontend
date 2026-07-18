@@ -1,0 +1,31 @@
+.trophy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-gold);
+  font-weight: 700;
+}
+
+.trophy-badge__icon {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 4px rgba(255, 199, 79, 0.5));
+}
+
+.trophy-badge__value {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.trophy-badge--md {
+  font-size: 1.1rem;
+}
+
+.trophy-badge--lg {
+  font-size: 1.6rem;
+}
+
+.trophy-badge--sm {
+  font-size: 0.9rem;
+}

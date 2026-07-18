@@ -8,5 +8,5 @@ export const authApi = {
   login: ({ identifier, password }) =>
     apiClient.post('/api/auth/login', { identifier, password }),
 
-  me: () => apiClient.get('/api/auth/me'),
+  getMe: () => apiClient.get('/api/auth/me'),
 };

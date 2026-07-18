@@ -1,0 +1,30 @@
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #6d4dc9, var(--color-purple) 70%);
+  border: 2px solid var(--color-gold);
+  box-shadow: 0 0 12px rgba(255, 199, 79, 0.35), 0 2px 6px rgba(0, 0, 0, 0.5);
+  color: var(--color-gold);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.level-badge--sm {
+  width: 32px;
+  height: 32px;
+  font-size: 0.8rem;
+}
+
+.level-badge--md {
+  width: 48px;
+  height: 48px;
+  font-size: 1.1rem;
+}
+
+.level-badge--lg {
+  width: 72px;
+  height: 72px;
+  font-size: 1.7rem;
+}

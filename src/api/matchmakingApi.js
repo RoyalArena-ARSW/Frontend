@@ -1,5 +1,6 @@
-import { apiClient } from './client';
+import { gameEngineClient } from './gameEngineClient';
 
 export const matchmakingApi = {
-  join: (userId) => apiClient.post('/api/matchmaking/join', { userId }),
+  joinQueue: (userId) => gameEngineClient.post('/api/matchmaking/join', { userId }),
+  leaveQueue: (userId) => gameEngineClient.post('/api/matchmaking/leave', { userId }),
 };

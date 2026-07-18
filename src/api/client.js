@@ -12,6 +12,20 @@ export function clearSession() {
   localStorage.removeItem(USER_KEY);
 }
 
+/**
+ * Error de API enriquecido: conserva el status HTTP y, si el backend los
+ * mandó (400 de validación), el mapa fieldErrors { campo: mensaje }.
+ */
+export class ApiError extends Error {
+  constructor(message, { status, fieldErrors, body } = {}) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.fieldErrors = fieldErrors ?? null;
+    this.body = body ?? null;
+  }
+}
+
 async function parseBody(response) {
   const contentType = response.headers.get('content-type') || '';
   if (!contentType.includes('application/json')) return null;
@@ -44,14 +58,14 @@ async function request(path, { method = 'GET', body, headers = {} } = {}) {
     if (typeof window !== 'undefined') {
       window.location.href = '/login';
     }
-    throw new Error('Sesión expirada, por favor inicia sesión de nuevo.');
+    throw new ApiError('Sesión expirada, por favor inicia sesión de nuevo.', { status: 401 });
   }
 
   const data = await parseBody(response);
 
   if (!response.ok) {
     const message = data?.message || data?.error || `Error ${response.status}`;
-    throw new Error(message);
+    throw new ApiError(message, { status: response.status, fieldErrors: data?.fieldErrors, body: data });
   }
 
   return data;
