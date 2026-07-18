@@ -1,0 +1,67 @@
+:root {
+  --color-bg-deep: #0a0e27;
+  --color-bg: #131a3a;
+  --color-bg-elevated: #1c2650;
+  --color-purple: #4a2d7a;
+  --color-purple-deep: #2c1a52;
+  --color-blue: #2b4c9e;
+  --color-gold: #ffc74f;
+  --color-gold-strong: #e8a828;
+  --color-text: #eef1ff;
+  --color-text-muted: #a3aed6;
+  --color-danger: #ff5c5c;
+  --color-success: #4fd67a;
+
+  --font-display: 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Segoe UI', system-ui, sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background:
+    radial-gradient(circle at 20% 15%, rgba(74, 45, 122, 0.55), transparent 45%),
+    radial-gradient(circle at 80% 85%, rgba(43, 76, 158, 0.5), transparent 50%),
+    linear-gradient(160deg, var(--color-bg-deep) 0%, var(--color-purple-deep) 55%, var(--color-bg-deep) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+a {
+  color: var(--color-gold);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-bg-deep);
+}
