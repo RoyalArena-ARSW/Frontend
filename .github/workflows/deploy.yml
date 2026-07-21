@@ -25,12 +25,6 @@ jobs:
         docker push royalarenaregistry.azurecr.io/frontend-microservice:latest
 
     - name: Update Container App via Azure CLI
-      uses: azure/CLI@v1
+      uses: azure/CLI@v2
       with:
-        inlineScript: |
-          az login --service-principal -u ${{ secrets.AZURE_ACR_USERNAME }} -p ${{ secrets.AZURE_ACR_PASSWORD }} --tenant <tu-tenant-id>
-          az extension add --name containerapp --upgrade
-          az containerapp update \
-            --name gameengine-microservice \
-            --resource-group royalarena-frontend_group \
-            --image royalarenaregistry.azurecr.io/frontend-microservice:latest
+        inlineScript: az containerapp update --name gameengine-microservice --resource-group royalarena-frontend_group --image royalarenaregistry.azurecr.io/frontend-microservice:latest
