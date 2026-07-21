@@ -24,14 +24,12 @@ jobs:
         docker build -t royalarenaregistry.azurecr.io/frontend-microservice:latest .
         docker push royalarenaregistry.azurecr.io/frontend-microservice:latest
 
-    - name: Azure Login
-      uses: azure/login@v1
+    - name: Update Container App via Azure CLI
+      uses: azure/CLI@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Update Azure Container App
-      uses: azure/container-apps-deploy-action@v1
-      with:
-        app-name: gameengine-microservice
-        resource-group: royalarena-frontend_group
-        image: royalarenaregistry.azurecr.io/frontend-microservice:latest
+        inlineScript: |
+          az extension add --name containerapp --upgrade
+          az containerapp update \
+            --name gameengine-microservice \
+            --resource-group royalarena-frontend_group \
+            --image royalarenaregistry.azurecr.io/frontend-microservice:latest
