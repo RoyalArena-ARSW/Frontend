@@ -1,0 +1,108 @@
+.match-hud {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 360px;
+  max-width: 100%;
+}
+
+.match-hud__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.match-hud__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.match-hud__badge--live {
+  background: rgba(255, 92, 92, 0.15);
+  border: 1px solid rgba(255, 92, 92, 0.5);
+  color: var(--color-danger);
+}
+
+.match-hud__badge--replay {
+  background: rgba(255, 199, 79, 0.15);
+  border: 1px solid rgba(255, 199, 79, 0.5);
+  color: var(--color-gold);
+}
+
+.match-hud__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.match-hud__badge--live .match-hud__dot {
+  animation: match-hud-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes match-hud-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(255, 92, 92, 0.6);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 0 5px rgba(255, 92, 92, 0);
+  }
+}
+
+.match-hud__timer {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.match-hud__scoreboard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, var(--color-bg-elevated) 0%, var(--color-bg) 100%);
+  border: 1px solid rgba(255, 199, 79, 0.18);
+  border-radius: var(--radius-md);
+}
+
+.match-hud__player {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.match-hud__player-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.match-hud__crowns {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-gold);
+  font-variant-numeric: tabular-nums;
+}

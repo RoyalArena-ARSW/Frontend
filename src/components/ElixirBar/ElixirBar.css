@@ -1,0 +1,61 @@
+.elixir-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.elixir-bar--horizontal {
+  flex: 1;
+}
+
+.elixir-bar__segments {
+  display: flex;
+  gap: 3px;
+  flex: 1;
+}
+
+.elixir-bar__segment {
+  flex: 1;
+  height: 14px;
+  border-radius: 3px;
+  background: radial-gradient(circle at 35% 30%, #d17bff, #7a1fd6 75%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  opacity: 0.35;
+  transition: opacity 0.08s linear;
+}
+
+.elixir-bar__value {
+  min-width: 28px;
+  text-align: right;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #d17bff;
+}
+
+/* Variante vertical: gauge que se llena de abajo hacia arriba, para el
+   panel lateral de la pantalla de batalla. */
+.elixir-bar--vertical {
+  flex-direction: column-reverse;
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+}
+
+.elixir-bar--vertical .elixir-bar__segments {
+  flex-direction: column-reverse;
+  gap: 3px;
+  width: 26px;
+  flex: 1;
+}
+
+.elixir-bar--vertical .elixir-bar__segment {
+  width: 100%;
+  height: auto;
+}
+
+.elixir-bar--vertical .elixir-bar__value {
+  min-width: 0;
+  text-align: center;
+}

@@ -1,0 +1,74 @@
+.hand {
+  width: 360px;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, var(--color-bg-elevated) 0%, var(--color-bg) 100%);
+  border: 1px solid rgba(255, 199, 79, 0.18);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.hand__cards {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+.hand__slot {
+  cursor: grab;
+  transition: opacity 0.15s ease;
+}
+
+.hand__slot:active {
+  cursor: grabbing;
+}
+
+.hand__slot--empty {
+  width: 84px;
+  aspect-ratio: 3 / 4;
+  border: 2px dashed rgba(163, 174, 214, 0.25);
+  border-radius: var(--radius-md);
+  background: rgba(6, 9, 26, 0.3);
+}
+
+.hand__slot--unaffordable {
+  opacity: 0.5;
+}
+
+.hand__slot--dragging {
+  opacity: 0.35;
+}
+
+.hand__next {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(163, 174, 214, 0.2);
+}
+
+.hand__next .card-tile--small {
+  transform: scale(0.85);
+}
+
+.hand__next-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 400px) {
+  .hand {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .hand__cards {
+    gap: 6px;
+  }
+}

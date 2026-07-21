@@ -39,6 +39,12 @@ export default function MenuPage() {
           <Link to="/leaderboard" className="menu-secondary__btn">
             Ranking
           </Link>
+          <Link to="/spectate" className="menu-secondary__btn">
+            TV Royale
+          </Link>
+          <Link to="/replays" className="menu-secondary__btn">
+            Historial
+          </Link>
         </nav>
       </main>
     </div>

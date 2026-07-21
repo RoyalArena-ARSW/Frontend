@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthCard } from '../../components/AuthCard/AuthCard';
 import { FormField } from '../../components/FormField/FormField';
 import { Button } from '../../components/Button/Button';
-import { FormError } from '../../components/FormError/FormError';
 import { useAuth } from '../../hooks/useAuth';
+import { useToast } from '../../hooks/useToast';
 import { profileApi } from '../../api/profileApi';
 import './RegisterPage.css';
 
@@ -31,6 +31,7 @@ function validate({ username, email, password, confirmPassword }) {
 
 export default function RegisterPage() {
   const { register } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
@@ -38,26 +39,24 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
-  const [formError, setFormError] = useState('');
-  const [profileError, setProfileError] = useState('');
+  const [profileFailed, setProfileFailed] = useState(false);
   const [createdUserId, setCreatedUserId] = useState(null);
   const [loading, setLoading] = useState(false);
 
   async function attemptCreateProfile(userId, displayName) {
     setLoading(true);
-    setProfileError('');
     try {
       await profileApi.createProfile({ userId, displayName });
       navigate('/menu', { replace: true });
     } catch (err) {
-      setProfileError(err.message || 'No se pudo crear tu perfil de jugador.');
+      setProfileFailed(true);
+      showToast({ variant: 'error', message: err.message || 'No se pudo crear tu perfil de jugador.' });
       setLoading(false);
     }
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setFormError('');
 
     const errors = validate({ username, email, password, confirmPassword });
     setFieldErrors(errors);
@@ -71,7 +70,7 @@ export default function RegisterPage() {
       if (err.fieldErrors) {
         setFieldErrors(err.fieldErrors);
       } else {
-        setFormError(err.message || 'No se pudo completar el registro.');
+        showToast({ variant: 'error', message: err.message || 'No se pudo completar el registro.' });
       }
       setLoading(false);
       return;
@@ -93,11 +92,11 @@ export default function RegisterPage() {
         </>
       }
     >
-      <FormError message={formError} />
-
-      {createdUserId && profileError ? (
+      {createdUserId && profileFailed ? (
         <div className="register-profile-warning">
-          <FormError message={`Tu cuenta se creó, pero: ${profileError}`} />
+          <p className="register-profile-warning__text">
+            Tu cuenta se creó, pero todavía no pudimos crear tu perfil de jugador.
+          </p>
           <Button
             type="button"
             loading={loading}

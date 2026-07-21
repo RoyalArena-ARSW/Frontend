@@ -1,0 +1,180 @@
+.replays-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.replays-header {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.replays-back {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.replays-back:hover {
+  color: var(--color-text);
+}
+
+.replays-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin: 0 0 6px;
+}
+
+.replays-subtitle {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.replays-status {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.replays-empty {
+  max-width: 420px;
+  text-align: center;
+  padding: 40px 24px;
+  margin-top: 20px;
+  background: linear-gradient(180deg, var(--color-bg-elevated) 0%, var(--color-bg) 100%);
+  border: 1px solid rgba(255, 199, 79, 0.18);
+  border-radius: var(--radius-lg);
+}
+
+.replays-empty__title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-gold);
+  margin: 0 0 8px;
+}
+
+.replays-empty__subtitle {
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.replays-grid {
+  width: 100%;
+  max-width: 720px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.replay-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 18px 20px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--color-bg-elevated) 0%, var(--color-bg) 100%);
+  border: 1px solid rgba(255, 199, 79, 0.18);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: transform 0.1s ease, border-color 0.15s ease;
+}
+
+.replay-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-gold);
+}
+
+.replay-card:active {
+  transform: translateY(0);
+}
+
+.replay-card__result {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.replay-card__result--victoria {
+  background: rgba(79, 214, 122, 0.15);
+  border: 1px solid rgba(79, 214, 122, 0.5);
+  color: var(--color-success);
+}
+
+.replay-card__result--derrota {
+  background: rgba(255, 92, 92, 0.15);
+  border: 1px solid rgba(255, 92, 92, 0.5);
+  color: var(--color-danger);
+}
+
+.replay-card__result--empate {
+  background: rgba(163, 174, 214, 0.12);
+  border: 1px solid rgba(163, 174, 214, 0.3);
+  color: var(--color-text-muted);
+}
+
+.replay-card__players {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.replay-card__vs {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.replay-card__stats {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.replay-card__crowns {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-card__duration {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-card__date {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}

@@ -1,0 +1,108 @@
+.replay-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 360px;
+  max-width: 100%;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, var(--color-bg-elevated) 0%, var(--color-bg) 100%);
+  border: 1px solid rgba(255, 199, 79, 0.18);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.replay-controls__icon-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(163, 174, 214, 0.3);
+  background: rgba(163, 174, 214, 0.12);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.replay-controls__icon-btn:hover {
+  border-color: var(--color-gold);
+}
+
+.replay-controls__icon-btn--primary {
+  background: linear-gradient(180deg, #ffd97a 0%, var(--color-gold) 45%, var(--color-gold-strong) 100%);
+  color: #2a1a05;
+  border: none;
+}
+
+.replay-controls__time {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  min-width: 34px;
+  text-align: center;
+}
+
+.replay-controls__scrubber {
+  flex: 1 1 120px;
+  min-width: 80px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(163, 174, 214, 0.2);
+  outline: none;
+  cursor: pointer;
+}
+
+.replay-controls__scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  border: 2px solid #2a1a05;
+  cursor: pointer;
+}
+
+.replay-controls__scrubber::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  border: 2px solid #2a1a05;
+  cursor: pointer;
+}
+
+.replay-controls__speeds {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.replay-controls__speed-btn {
+  padding: 5px 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(163, 174, 214, 0.3);
+  background: rgba(163, 174, 214, 0.12);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.replay-controls__speed-btn:hover {
+  border-color: var(--color-gold);
+}
+
+.replay-controls__speed-btn--active {
+  background: rgba(255, 199, 79, 0.18);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}

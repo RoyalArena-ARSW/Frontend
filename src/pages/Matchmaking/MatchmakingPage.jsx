@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useMatch } from '../../hooks/useMatch';
+import { useToast } from '../../hooks/useToast';
 import { matchmakingApi } from '../../api/matchmakingApi';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { Button } from '../../components/Button/Button';
-import { FormError } from '../../components/FormError/FormError';
 import './MatchmakingPage.css';
 
 const RESULT = {
@@ -16,6 +16,8 @@ const RESULT = {
   NO_ACTIVE_DECK: 'NO_ACTIVE_DECK',
   DECK_SERVICE_UNAVAILABLE: 'DECK_SERVICE_UNAVAILABLE',
 };
+
+const CONNECTION_ERROR_MESSAGE = 'No se pudo conectar con el servidor de partidas. ¿Está encendido el Game Engine?';
 
 function formatElapsed(seconds) {
   const m = Math.floor(seconds / 60);
@@ -27,12 +29,12 @@ export default function MatchmakingPage() {
   const { user } = useAuth();
   const { connect, subscribe } = useWebSocket();
   const { setMatch } = useMatch();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
-  // 'connecting' | 'searching' | 'found' | 'blocked' | 'error'
+  // 'connecting' | 'searching' | 'found' — los resultados que impiden jugar
+  // se avisan con un toast y vuelven al menú, no se quedan en esta pantalla.
   const [phase, setPhase] = useState('connecting');
-  const [blockedReason, setBlockedReason] = useState(null);
-  const [errorMessage, setErrorMessage] = useState('');
   const [elapsed, setElapsed] = useState(0);
 
   // Si es true al desmontar/cancelar, el jugador sigue en la cola del
@@ -43,51 +45,68 @@ export default function MatchmakingPage() {
     let cancelled = false;
     let subscription;
 
+    function goToMenuWithError(message) {
+      showToast({ variant: 'error', message });
+      navigate('/menu', { replace: true });
+    }
+
     async function startMatchmaking() {
       try {
         await connect();
-        if (cancelled) return;
+      } catch {
+        if (!cancelled) goToMenuWithError(CONNECTION_ERROR_MESSAGE);
+        return;
+      }
+      if (cancelled) return;
 
-        // CRÍTICO: la suscripción tiene que quedar activa antes del /join,
-        // o podemos perdernos el MatchFoundDTO si el emparejamiento es
-        // instantáneo.
-        subscription = subscribe(`/topic/matchmaking/${user.id}`, (matchFound) => {
-          queuedRef.current = false;
-          setMatch(matchFound);
-          setPhase('found');
-          navigate(`/battle/${matchFound.matchId}`, { replace: true });
-        });
+      // CRÍTICO: la suscripción tiene que quedar activa antes del /join,
+      // o podemos perdernos el MatchFoundDTO si el emparejamiento es
+      // instantáneo.
+      subscription = subscribe(`/topic/matchmaking/${user.id}`, (matchFound) => {
+        queuedRef.current = false;
+        setMatch(matchFound);
+        setPhase('found');
+        navigate(`/battle/${matchFound.matchId}`, { replace: true });
+      });
 
-        const { result } = await matchmakingApi.joinQueue(user.id);
-
-        if (cancelled) {
-          if (result === RESULT.QUEUED || result === RESULT.ALREADY_QUEUED) {
-            matchmakingApi.leaveQueue(user.id).catch(() => {});
-          }
-          return;
-        }
-
-        if (result === RESULT.QUEUED || result === RESULT.ALREADY_QUEUED) {
-          queuedRef.current = true;
-          setPhase('searching');
-        } else if (result === RESULT.MATCHED) {
-          // La notificación con el matchId ya viene en camino por el socket.
-          setPhase('found');
-        } else if (result === RESULT.NO_ACTIVE_DECK) {
-          setPhase('blocked');
-          setBlockedReason(RESULT.NO_ACTIVE_DECK);
-        } else if (result === RESULT.DECK_SERVICE_UNAVAILABLE) {
-          setPhase('blocked');
-          setBlockedReason(RESULT.DECK_SERVICE_UNAVAILABLE);
-        } else {
-          setPhase('error');
-          setErrorMessage(`Respuesta inesperada del servidor: ${result}`);
-        }
+      let result;
+      try {
+        ({ result } = await matchmakingApi.joinQueue(user.id));
       } catch (err) {
-        if (!cancelled) {
-          setPhase('error');
-          setErrorMessage(err.message || 'No se pudo conectar con el servidor de juego.');
+        if (cancelled) return;
+        const message = err instanceof TypeError ? CONNECTION_ERROR_MESSAGE : err.message || CONNECTION_ERROR_MESSAGE;
+        goToMenuWithError(message);
+        return;
+      }
+
+      if (cancelled) {
+        if (result === RESULT.QUEUED || result === RESULT.ALREADY_QUEUED) {
+          matchmakingApi.leaveQueue(user.id).catch(() => {});
         }
+        return;
+      }
+
+      if (result === RESULT.QUEUED) {
+        queuedRef.current = true;
+        setPhase('searching');
+      } else if (result === RESULT.ALREADY_QUEUED) {
+        queuedRef.current = true;
+        setPhase('searching');
+        showToast({ variant: 'info', message: 'Ya estás buscando partida.' });
+      } else if (result === RESULT.MATCHED) {
+        // La notificación con el matchId ya viene en camino por el socket.
+        setPhase('found');
+      } else if (result === RESULT.NO_ACTIVE_DECK) {
+        showToast({
+          variant: 'warning',
+          message: 'Necesitas un mazo activo para jugar. Ve a la sección Mazo y arma el tuyo.',
+          action: { label: 'Ir a mi mazo', onClick: () => navigate('/deck') },
+        });
+        navigate('/menu', { replace: true });
+      } else if (result === RESULT.DECK_SERVICE_UNAVAILABLE) {
+        goToMenuWithError('El servicio de mazos no está disponible en este momento. Intenta de nuevo en unos segundos.');
+      } else {
+        goToMenuWithError(`Respuesta inesperada del servidor: ${result}`);
       }
     }
 
@@ -101,7 +120,8 @@ export default function MatchmakingPage() {
         matchmakingApi.leaveQueue(user.id).catch(() => {});
       }
     };
-  }, [connect, subscribe, setMatch, navigate, user.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connect, subscribe, setMatch, showToast, navigate, user.id]);
 
   useEffect(() => {
     if (phase !== 'searching') return undefined;
@@ -145,31 +165,6 @@ export default function MatchmakingPage() {
             <Spinner size="lg" />
             <p className="matchmaking-status">¡Rival encontrado! Preparando la partida...</p>
           </>
-        )}
-
-        {phase === 'blocked' && blockedReason === RESULT.NO_ACTIVE_DECK && (
-          <div className="matchmaking-blocked">
-            <h1>Necesitas un mazo</h1>
-            <p>Para entrar a la cola necesitas tener un mazo activo con 8 cartas.</p>
-            <Link to="/deck" className="matchmaking-blocked__link">
-              Ir a mi mazo
-            </Link>
-          </div>
-        )}
-
-        {phase === 'blocked' && blockedReason === RESULT.DECK_SERVICE_UNAVAILABLE && (
-          <div className="matchmaking-blocked">
-            <h1>Servicio no disponible</h1>
-            <p>El servicio de mazos no está disponible en este momento. Intenta de nuevo en unos segundos.</p>
-          </div>
-        )}
-
-        {phase === 'error' && <FormError message={errorMessage} />}
-
-        {(phase === 'blocked' || phase === 'error') && (
-          <Link to="/menu" className="matchmaking-back-link">
-            Volver al menú
-          </Link>
         )}
       </div>
     </div>

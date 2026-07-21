@@ -22,7 +22,9 @@ async function request(path, { method = 'GET', body } = {}) {
   const data = await parseBody(response);
 
   if (!response.ok) {
-    throw new Error(data?.message || data?.error || `Error ${response.status}`);
+    const error = new Error(data?.message || data?.error || `Error ${response.status}`);
+    error.status = response.status;
+    throw error;
   }
 
   return data;

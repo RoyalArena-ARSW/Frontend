@@ -3,8 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthCard } from '../../components/AuthCard/AuthCard';
 import { FormField } from '../../components/FormField/FormField';
 import { Button } from '../../components/Button/Button';
-import { FormError } from '../../components/FormError/FormError';
 import { useAuth } from '../../hooks/useAuth';
+import { useToast } from '../../hooks/useToast';
 
 function validate({ identifier, password }) {
   const errors = {};
@@ -15,20 +15,19 @@ function validate({ identifier, password }) {
 
 export default function LoginPage() {
   const { login } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
-  const [formError, setFormError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const redirectTo = location.state?.from?.pathname ?? '/menu';
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setFormError('');
 
     const errors = validate({ identifier, password });
     setFieldErrors(errors);
@@ -39,7 +38,7 @@ export default function LoginPage() {
       await login(identifier.trim(), password);
       navigate(redirectTo, { replace: true });
     } catch (err) {
-      setFormError(err.message || 'No se pudo iniciar sesión.');
+      showToast({ variant: 'error', message: err.message || 'No se pudo iniciar sesión.' });
     } finally {
       setLoading(false);
     }
@@ -55,7 +54,6 @@ export default function LoginPage() {
         </>
       }
     >
-      <FormError message={formError} />
       <form onSubmit={handleSubmit} noValidate>
         <FormField
           label="Email o usuario"

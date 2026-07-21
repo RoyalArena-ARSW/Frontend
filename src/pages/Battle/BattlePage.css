@@ -1,29 +1,33 @@
-.battle-screen {
-  min-height: 100vh;
+.battle-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.battle-board-column {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
+  gap: 10px;
 }
 
-.battle-screen--center {
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
-
-.battle-screen__status {
-  color: var(--color-text-muted);
-}
-
-.battle-hud {
-  width: 360px;
-  max-width: 100%;
+.battle-side-panel {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
+  flex-shrink: 0;
+  width: 96px;
+  padding: 16px 10px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, var(--color-bg-elevated) 0%, var(--color-bg) 100%);
+  border: 1px solid rgba(255, 199, 79, 0.18);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
 .battle-hud__timer {
@@ -38,57 +42,9 @@
   font-size: 0.85rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-}
-
-.battle-hud__elixir--me {
-  color: #7ab0ff;
+  text-align: center;
 }
 
 .battle-hud__elixir--opponent {
   color: #ff8f8f;
-}
-
-.battle-canvas-wrap {
-  position: relative;
-  width: 360px;
-  height: 640px;
-  max-width: 100%;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  border: 1px solid rgba(255, 199, 79, 0.25);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
-}
-
-.battle-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: #1c2650;
-}
-
-.battle-overlay {
-  position: absolute;
-  inset: 0;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  background: rgba(6, 9, 26, 0.82);
-}
-
-.battle-overlay__result {
-  font-family: var(--font-display);
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-gold);
-  text-shadow: 0 0 20px rgba(255, 199, 79, 0.4);
-  margin: 0;
-}
-
-.battle-overlay .btn {
-  width: auto;
-  padding: 12px 28px;
 }

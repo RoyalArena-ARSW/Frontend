@@ -250,6 +250,13 @@ funciones, nunca mapear x/y a mano.
   STOMP única de la app (ver WebSocket arriba).
 - `src/context/MatchContext.jsx` + `src/hooks/useMatch.js`: datos de la
   partida encontrada (matchId/opponentId/myTeam).
+- `src/context/ToastContext.jsx` + `src/hooks/useToast.js`: notificaciones
+  globales (`showToast({ variant: 'error'|'warning'|'info', message, action?,
+  duration? })`). Montado como el wrapper más externo de `App.jsx` para que
+  un toast disparado justo antes de un `navigate()` (p. ej. matchmaking
+  volviendo al menú) siga visible en la pantalla siguiente. Se usa para
+  errores generales (no de validación de campo) en toda la app — los errores
+  por campo de un formulario siguen mostrándose inline en `FormField`.
 - `src/components/ProtectedRoute`: redirige a `/login` si no hay sesión.
 - Rutas: `/login`, `/register`, `/menu`, `/deck`, `/collection`, `/profile`,
   `/leaderboard`, `/matchmaking`, `/battle/:matchId` (todas menos login y

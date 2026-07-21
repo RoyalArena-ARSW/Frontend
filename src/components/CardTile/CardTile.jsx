@@ -10,7 +10,7 @@ export function CardTile({ card, size = 'medium', selected = false, inDeck = fal
   return (
     <button
       type="button"
-      className={`card-tile card-tile--${size} card-tile--${rarityClass}${selected ? ' card-tile--selected' : ''}${interactive ? '' : ' card-tile--static'}`}
+      className={`card-tile card-tile--${size} card-tile--${rarityClass}${selected ? ' card-tile--selected' : ''}${interactive ? '' : ' card-tile--static'}${inDeck ? ' card-tile--in-deck' : ''}`}
       onClick={onClick}
       disabled={!interactive}
       title={card.name}

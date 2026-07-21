@@ -17,7 +17,7 @@ export function WebSocketProvider({ children }) {
   const clientRef = useRef(null);
   const subscriptionsRef = useRef(new Map());
   const nextSubIdRef = useRef(0);
-  const pendingConnectResolversRef = useRef([]);
+  const pendingWaitersRef = useRef([]); // { resolve, reject } de connect() en curso
 
   const [connected, setConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
@@ -41,43 +41,61 @@ export function WebSocketProvider({ children }) {
     }
   }, []);
 
+  // Resuelve o rechaza TODOS los connect() en espera a la vez (puede haber
+  // varios si varias pantallas llaman connect() mientras se establece la
+  // primera conexión).
+  const settlePendingWaiters = useCallback((settle) => {
+    const waiters = pendingWaitersRef.current;
+    pendingWaitersRef.current = [];
+    waiters.forEach(settle);
+  }, []);
+
   const connect = useCallback(() => {
     const existing = clientRef.current;
-    if (existing) {
-      if (existing.connected) return Promise.resolve();
-      return new Promise((resolve) => pendingConnectResolversRef.current.push(resolve));
-    }
+    if (existing?.connected) return Promise.resolve();
 
-    setConnecting(true);
-    setError('');
+    const alreadyConnecting = Boolean(existing);
 
     return new Promise((resolve, reject) => {
+      pendingWaitersRef.current.push({ resolve, reject });
+      if (alreadyConnecting) return;
+
+      setConnecting(true);
+      setError('');
+
       const client = new Client({
         webSocketFactory: () => new SockJS(WS_ENDPOINT),
         reconnectDelay: 3000,
         onConnect: () => {
           setConnected(true);
           setConnecting(false);
+          setError('');
           resubscribeAll();
-          resolve();
-          const resolvers = pendingConnectResolversRef.current;
-          pendingConnectResolversRef.current = [];
-          resolvers.forEach((r) => r());
+          settlePendingWaiters((waiter) => waiter.resolve());
         },
         onWebSocketClose: () => {
           setConnected(false);
         },
+        // Si el WebSocket ni siquiera llega a abrirse (server caído), STOMP
+        // reintentará solo cada reconnectDelay pero, sin este handler, la
+        // promesa de connect() jamás se resolvía NI se rechazaba: se quedaba
+        // colgada para siempre y el usuario no veía ningún error.
+        onWebSocketError: () => {
+          const message = 'No se pudo conectar con el servidor de juego.';
+          setError(message);
+          settlePendingWaiters((waiter) => waiter.reject(new Error(message)));
+        },
         onStompError: (frame) => {
           const message = frame.headers?.message || 'Error de conexión con el servidor de juego.';
           setError(message);
-          reject(new Error(message));
+          settlePendingWaiters((waiter) => waiter.reject(new Error(message)));
         },
       });
 
       clientRef.current = client;
       client.activate();
     });
-  }, [resubscribeAll]);
+  }, [resubscribeAll, settlePendingWaiters]);
 
   const disconnect = useCallback(() => {
     const client = clientRef.current;
@@ -85,7 +103,7 @@ export function WebSocketProvider({ children }) {
     client.deactivate();
     clientRef.current = null;
     subscriptionsRef.current.clear();
-    pendingConnectResolversRef.current = [];
+    pendingWaitersRef.current = [];
     setConnected(false);
     setConnecting(false);
   }, []);

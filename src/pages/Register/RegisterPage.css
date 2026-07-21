@@ -3,3 +3,10 @@
   flex-direction: column;
   gap: 10px;
 }
+
+.register-profile-warning__text {
+  margin: 0 0 4px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
