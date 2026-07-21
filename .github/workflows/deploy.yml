@@ -28,6 +28,7 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
+          az login --service-principal -u ${{ secrets.AZURE_ACR_USERNAME }} -p ${{ secrets.AZURE_ACR_PASSWORD }} --tenant <tu-tenant-id>
           az extension add --name containerapp --upgrade
           az containerapp update \
             --name gameengine-microservice \
