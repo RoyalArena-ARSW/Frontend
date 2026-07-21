@@ -11,13 +11,27 @@ jobs:
     steps:  
     - name: Checkout source code
       uses: actions/checkout@v3
+
     - name: Log in to Azure Container Registry
       uses: azure/docker-login@v1
       with:
         login-server: royalarenaregistry.azurecr.io
         username: ${{ secrets.AZURE_ACR_USERNAME }}
         password: ${{ secrets.AZURE_ACR_PASSWORD }}
+
     - name: Build and push Docker image
       run: |
         docker build -t royalarenaregistry.azurecr.io/frontend-microservice:latest .
         docker push royalarenaregistry.azurecr.io/frontend-microservice:latest
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Update Azure Container App
+      uses: azure/container-apps-deploy-action@v1
+      with:
+        app-name: gameengine-microservice
+        resource-group: royalarena-frontend_group
+        image: royalarenaregistry.azurecr.io/frontend-microservice:latest
